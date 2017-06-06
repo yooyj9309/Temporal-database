@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>NUS-Web</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<style type="text/css">
+#filecontents {
+	border: double;
+	overflow-y: scroll;
+	height: 400px;
+}
+</style>
+<body>
+	Please Select json file of which contents are to be read:
+	<input type="file" id="txtfiletoread" />
+	<div>The File Contents are as below:</div>
+	<div id="filecontents"></div>
+	<input type="button" id="btn" onclick="setParentText()" value="load"
+		style="font-size: 20px; width: 368px; height: 30px" />
+</body>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script>
+	window.onload = function() {
+		//Check the support for the File API support 
+		if (window.File && window.FileReader && window.FileList && window.Blob) {
+			var fileSelected = document.getElementById('txtfiletoread');
+			fileSelected.addEventListener('change', function(e) {
+				//Set the extension for the file 
+				var fileExtension = /text.*/;
+				//Get the file object 
+				var fileTobeRead = fileSelected.files[0];
+				//Check of the extension match 
+				if (!fileTobeRead.type.match(fileExtension)) {
+					if (!fileTobeRead.type.match(/image.*/)) {
+						var fileReader = new FileReader();
+						fileReader.onload = function(e) {
+							var fileContents = document
+									.getElementById('filecontents');
+							fileContents.innerText = fileReader.result;
+						}
+						fileReader.readAsText(fileTobeRead);
+					}
+					else {
+						alert("Please select json file(No Image)");
+					}
+				} else {
+					alert("Please select json file(No Text)");
+				}
+
+			}, false);
+		} else {
+			alert("Files are not supported");
+		}
+	}
+	function setParentText() {
+		opener.document.getElementById("mySavedModel").innerText = document
+				.getElementById("filecontents").innerText;
+		opener.load();
+		window.close();
+	}
+</script>
+</html>
